@@ -1,0 +1,162 @@
+package com.example.batchforscience.config;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import javax.sql.DataSource;
+
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.partition.support.MultiResourcePartitioner;
+import org.springframework.batch.core.partition.support.Partitioner;
+import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import com.example.batchforscience.domain.Client;
+import com.example.batchforscience.domain.ClientEntity;
+import com.example.batchforscience.mappers.ClientMapper;
+import com.example.batchforscience.processor.ClientItemProcessor;
+
+@Configuration
+@EnableBatchProcessing
+public class BatchConfiguration {
+
+	private @Value("${batch.folders.clients}") String clientsFolder;
+	private @Value("${batch.chunk.size}") int chunkSize;
+	private @Value("${batch.linestoskip}") int linesToSkip;
+	
+	@Autowired
+	public JobBuilderFactory jobBuilderFactory;
+
+	@Autowired
+	public StepBuilderFactory stepBuilderFactory;
+
+	@Autowired
+	private JdbcBatchItemWriter<ClientEntity> writer;
+
+	@Autowired
+	private FlatFileItemReader<Client> personItemReader;
+
+	@Bean("partitioner")
+	@StepScope
+	public Partitioner partitioner() {
+		MultiResourcePartitioner partitioner = new MultiResourcePartitioner();
+		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		Resource[] resources = null;
+		try {
+			resources = resolver.getResources(clientsFolder);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		partitioner.setResources(resources);
+		partitioner.partition(10);
+		return partitioner;
+	}
+
+	@Bean
+	public ClientItemProcessor processor() {
+		return new ClientItemProcessor();
+	}
+
+	@Bean
+	public JdbcBatchItemWriter<ClientEntity> writer(DataSource dataSource) {
+        return new JdbcBatchItemWriterBuilder<ClientEntity>()
+                .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
+                .sql("INSERT INTO client (full_name, address, telephone, identity_number, description, created_at, version) "
+                		+ "VALUES (:fullName, :address, :telephone, :identityNumber, :description, now(), 1)")
+                .dataSource(dataSource)
+                .build();
+	}
+
+	@Bean
+	public Job importUserJob(Step toEntity) {
+		return jobBuilderFactory.get("importUserJob")
+				.incrementer(new RunIdIncrementer())
+				.flow(masterStep())
+				.end()
+				.build();
+	}
+
+	@Bean
+	public Step toEntity() {
+		return stepBuilderFactory.get("toEntity")
+				.<Client, ClientEntity>chunk(chunkSize)
+				.processor(processor())
+				.writer(writer)
+				.reader(personItemReader)
+				.build();
+	}
+
+	@Bean
+	public ThreadPoolTaskExecutor taskExecutor() {
+		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+		taskExecutor.setMaxPoolSize(10);
+		taskExecutor.setCorePoolSize(10);
+		taskExecutor.setQueueCapacity(10);
+		taskExecutor.afterPropertiesSet();
+		return taskExecutor;
+	}
+
+	@Bean
+	@Qualifier("masterStep")
+	public Step masterStep() {
+		return stepBuilderFactory.get("masterStep")
+				.partitioner("toEntity", partitioner())
+				.step(toEntity())
+				.taskExecutor(taskExecutor())
+				.build();
+	}
+
+	@Bean
+	@StepScope
+	@Qualifier("clientItemReader")
+	@DependsOn("partitioner")
+	public FlatFileItemReader<Client> clientItemReader(@Value("#{stepExecutionContext['fileName']}") String filename)
+			throws MalformedURLException {
+		
+		DefaultLineMapper<Client> lineMapper = new DefaultLineMapper<Client>();
+		lineMapper.setLineTokenizer(new DelimitedLineTokenizer());
+		lineMapper.setFieldSetMapper(new ClientMapper());
+
+		return new FlatFileItemReaderBuilder<Client>().name("clientItemReader")
+				.delimited()
+				.names(new String[]{"firstName", "lastName", "description", "address", "telephone", "identityNumber"})
+				.lineMapper(lineMapper)
+				.resource(new UrlResource(filename))
+				.linesToSkip(linesToSkip)
+				.build();
+	}    
+    
+/*	
+	.fieldSetMapper(new BeanWrapperFieldSetMapper<Client>() {
+		{
+			setTargetType(Client.class);
+		}
+	})*/ 
+    
+    
+    
+    
+	
+}
