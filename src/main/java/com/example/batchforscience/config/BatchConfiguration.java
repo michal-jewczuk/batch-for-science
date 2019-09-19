@@ -14,6 +14,8 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.partition.support.MultiResourcePartitioner;
 import org.springframework.batch.core.partition.support.Partitioner;
+import org.springframework.batch.item.data.RepositoryItemWriter;
+import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -37,6 +39,7 @@ import com.example.batchforscience.domain.Client;
 import com.example.batchforscience.domain.ClientEntity;
 import com.example.batchforscience.mappers.ClientMapper;
 import com.example.batchforscience.processor.ClientItemProcessor;
+import com.example.batchforscience.repository.ClientRepository;
 
 @Configuration
 @EnableBatchProcessing
@@ -54,7 +57,10 @@ public class BatchConfiguration {
 	public StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	private JdbcBatchItemWriter<ClientEntity> writer;
+	private JdbcBatchItemWriter<ClientEntity> writerJdbc;
+	
+	@Autowired
+	private RepositoryItemWriter<ClientEntity> writerRepo;
 
 	@Autowired
 	private FlatFileItemReader<Client> personItemReader;
@@ -81,13 +87,21 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public JdbcBatchItemWriter<ClientEntity> writer(DataSource dataSource) {
+	public JdbcBatchItemWriter<ClientEntity> writerJdbc(DataSource dataSource) {
         return new JdbcBatchItemWriterBuilder<ClientEntity>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .sql("INSERT INTO client (id, full_name, address, telephone, identity_number, description) "
                 		+ "VALUES (:id, :fullName, :address, :telephone, :identityNumber, :description)")
                 .dataSource(dataSource)
                 .build();
+	}
+	
+	@Bean
+	public RepositoryItemWriter<ClientEntity> writerRepo(ClientRepository clientRepository) {
+		return new RepositoryItemWriterBuilder<ClientEntity>()
+				.repository(clientRepository)
+				.methodName("save")
+				.build();
 	}
 
 	@Bean
@@ -104,7 +118,7 @@ public class BatchConfiguration {
 		return stepBuilderFactory.get("toEntity")
 				.<Client, ClientEntity>chunk(chunkSize)
 				.processor(processor())
-				.writer(writer)
+				.writer(writerRepo)
 				.reader(personItemReader)
 				.build();
 	}

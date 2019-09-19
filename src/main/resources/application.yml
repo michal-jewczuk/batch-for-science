@@ -11,12 +11,6 @@ spring:
   datasource:
     type: "com.zaxxer.hikari.HikariDataSource"
     platform: "h2"
-
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: "DEBUG"
         
 batch:
   folders:
