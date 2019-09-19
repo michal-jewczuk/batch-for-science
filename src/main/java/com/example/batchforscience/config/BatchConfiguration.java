@@ -45,6 +45,7 @@ public class BatchConfiguration {
 	private @Value("${batch.folders.clients}") String clientsFolder;
 	private @Value("${batch.chunk.size}") int chunkSize;
 	private @Value("${batch.linestoskip}") int linesToSkip;
+	private @Value("${batch.delimiter}") String delimiter;
 	
 	@Autowired
 	public JobBuilderFactory jobBuilderFactory;
@@ -136,14 +137,14 @@ public class BatchConfiguration {
 			throws MalformedURLException {
 		
 		DefaultLineMapper<Client> lineMapper = new DefaultLineMapper<Client>();
-		lineMapper.setLineTokenizer(new DelimitedLineTokenizer());
+		lineMapper.setLineTokenizer(new DelimitedLineTokenizer(delimiter));
 		lineMapper.setFieldSetMapper(new ClientMapper());
 
 		return new FlatFileItemReaderBuilder<Client>().name("clientItemReader")
+				.resource(new UrlResource(filename))
 				.delimited()
 				.names(new String[]{"firstName", "lastName", "description", "address", "telephone", "identityNumber"})
 				.lineMapper(lineMapper)
-				.resource(new UrlResource(filename))
 				.linesToSkip(linesToSkip)
 				.build();
 	}    

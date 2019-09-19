@@ -9,8 +9,7 @@ import com.example.batchforscience.domain.Client;
 public class ClientMapper implements FieldSetMapper<Client> {
 
 	@Override
-	public Client mapFieldSet(FieldSet fieldSet) throws BindException {
-		
+	public Client mapFieldSet(FieldSet fieldSet) throws BindException {	
 		// should happen only with last line
 		if (fieldSet.getFieldCount() < 2) {
 			return null;

@@ -20,7 +20,8 @@ logging:
         
 batch:
   folders:
-    clients: "/clients/*.csv"
+    clients: "/clients/*"
   chunk:
     size: 10
   linestoskip: 1
+  delimiter: ";"
