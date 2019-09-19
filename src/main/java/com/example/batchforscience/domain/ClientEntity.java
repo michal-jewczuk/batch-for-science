@@ -2,11 +2,15 @@ package com.example.batchforscience.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "client")
-public class ClientEntity extends AbstractEntity {
+public class ClientEntity {
+
+	@Id
+	private Long id;
 
 	@Column(name = "full_name", nullable = false)
 	private String fullName;
@@ -19,9 +23,17 @@ public class ClientEntity extends AbstractEntity {
 
 	@Column(name = "identity_number", nullable = false)
 	private String identityNumber;
-	
+
 	@Column(name = "description", nullable = false)
 	private String description;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getFullName() {
 		return fullName;
@@ -65,7 +77,7 @@ public class ClientEntity extends AbstractEntity {
 
 	@Override
 	public String toString() {
-		return "ClientEntity [fullName=" + fullName + ", address=" + address + ", telephone=" + telephone
+		return "ClientEntity [id=" + id + ", fullName=" + fullName + ", address=" + address + ", telephone=" + telephone
 				+ ", identityNumber=" + identityNumber + ", description=" + description + "]";
 	}
 

@@ -18,6 +18,7 @@ public class ClientItemProcessor implements ItemProcessor<Client, ClientEntity> 
 		StringBuilder fullName = new StringBuilder();
 		fullName.append(item.getFirstName()).append(" ").append(item.getLastName());
 		
+		entity.setId(item.getId());
 		entity.setFullName(fullName.toString());
 		entity.setDescription(item.getDescription());
 		entity.setAddress(item.getAddress());

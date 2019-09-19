@@ -2,12 +2,21 @@ package com.example.batchforscience.domain;
 
 public class Client {
 
+	private Long id;
 	private String firstName;
 	private String lastName;
 	private String description;
 	private String address;
 	private String telephone;
 	private String identityNumber;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getFirstName() {
 		return firstName;

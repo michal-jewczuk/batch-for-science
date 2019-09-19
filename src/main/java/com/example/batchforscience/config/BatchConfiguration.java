@@ -84,8 +84,8 @@ public class BatchConfiguration {
 	public JdbcBatchItemWriter<ClientEntity> writer(DataSource dataSource) {
         return new JdbcBatchItemWriterBuilder<ClientEntity>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-                .sql("INSERT INTO client (full_name, address, telephone, identity_number, description, created_at, version) "
-                		+ "VALUES (:fullName, :address, :telephone, :identityNumber, :description, now(), 1)")
+                .sql("INSERT INTO client (id, full_name, address, telephone, identity_number, description) "
+                		+ "VALUES (:id, :fullName, :address, :telephone, :identityNumber, :description)")
                 .dataSource(dataSource)
                 .build();
 	}
@@ -143,21 +143,10 @@ public class BatchConfiguration {
 		return new FlatFileItemReaderBuilder<Client>().name("clientItemReader")
 				.resource(new UrlResource(filename))
 				.delimited()
-				.names(new String[]{"firstName", "lastName", "description", "address", "telephone", "identityNumber"})
+				.names(new String[]{"id", "firstName", "lastName", "description", "address", "telephone", "identityNumber"})
 				.lineMapper(lineMapper)
 				.linesToSkip(linesToSkip)
 				.build();
-	}    
-    
-/*	
-	.fieldSetMapper(new BeanWrapperFieldSetMapper<Client>() {
-		{
-			setTargetType(Client.class);
-		}
-	})*/ 
-    
-    
-    
-    
+	}      
 	
 }
