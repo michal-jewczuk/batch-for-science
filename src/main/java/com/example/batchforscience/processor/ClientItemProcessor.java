@@ -16,14 +16,15 @@ public class ClientItemProcessor implements ItemProcessor<Client, ClientEntity> 
 		ClientEntity entity = new ClientEntity();
 		
 		StringBuilder fullName = new StringBuilder();
-		fullName.append(item.getFirstName()).append(" ").append(item.getLastName());
+		fullName.append(item.getName()).append(" ").append(item.getDescription());
 		
 		entity.setId(item.getId());
-		entity.setFullName(fullName.toString());
+		entity.setName(item.getName());
 		entity.setDescription(item.getDescription());
 		entity.setAddress(item.getAddress());
 		entity.setTelephone(item.getTelephone());
 		entity.setIdentityNumber(item.getIdentityNumber());
+		entity.setFullName(fullName.toString());
 		
 		log.info(entity.toString());
 		return entity;

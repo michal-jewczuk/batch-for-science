@@ -3,8 +3,7 @@ package com.example.batchforscience.domain;
 public class Client {
 
 	private Long id;
-	private String firstName;
-	private String lastName;
+	private String name;
 	private String description;
 	private String address;
 	private String telephone;
@@ -18,20 +17,12 @@ public class Client {
 		this.id = id;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getDescription() {

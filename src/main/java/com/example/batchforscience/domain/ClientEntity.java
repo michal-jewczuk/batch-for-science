@@ -12,8 +12,8 @@ public class ClientEntity {
 	@Id
 	private Long id;
 
-	@Column(name = "full_name", nullable = false)
-	private String fullName;
+	@Column(name = "name", nullable = false)
+	private String name;
 
 	@Column(name = "address", nullable = false)
 	private String address;
@@ -27,6 +27,9 @@ public class ClientEntity {
 	@Column(name = "description", nullable = false)
 	private String description;
 
+	@Column(name = "full_name", nullable = false)
+	private String fullName;
+
 	public Long getId() {
 		return id;
 	}
@@ -35,12 +38,12 @@ public class ClientEntity {
 		this.id = id;
 	}
 
-	public String getFullName() {
-		return fullName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getAddress() {
@@ -75,10 +78,19 @@ public class ClientEntity {
 		this.description = description;
 	}
 
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
 	@Override
 	public String toString() {
-		return "ClientEntity [id=" + id + ", fullName=" + fullName + ", address=" + address + ", telephone=" + telephone
-				+ ", identityNumber=" + identityNumber + ", description=" + description + "]";
+		return "ClientEntity [id=" + id + ", name=" + name + ", address=" + address + ", telephone=" + telephone
+				+ ", identityNumber=" + identityNumber + ", description=" + description + ", fullName=" + fullName
+				+ "]";
 	}
 
 }

@@ -17,12 +17,11 @@ public class ClientMapper implements FieldSetMapper<Client> {
 		
 		Client client = new Client();
 		client.setId(fieldSet.readLong(0));
-		client.setFirstName(fieldSet.readString(1));
-		client.setLastName(fieldSet.readString(2));
-		client.setDescription(fieldSet.readString(3));
-		client.setAddress(fieldSet.readString(4));
-		client.setTelephone(fieldSet.readString(5));
-		client.setIdentityNumber(fieldSet.readString(6));
+		client.setName(fieldSet.readString(1));
+		client.setDescription(fieldSet.readString(2));
+		client.setAddress(fieldSet.readString(3));
+		client.setTelephone(fieldSet.readString(4));
+		client.setIdentityNumber(fieldSet.readString(5));
 		
 		return client;
 	}
