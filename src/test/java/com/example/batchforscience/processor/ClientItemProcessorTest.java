@@ -1,14 +1,13 @@
 package com.example.batchforscience.processor;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.example.batchforscience.TestConstants;
 import com.example.batchforscience.domain.Client;
-import com.example.batchforscience.domain.ClientEntity;
-import com.example.batchforscience.processor.ClientItemProcessor;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ClientItemProcessorTest {
@@ -17,7 +16,7 @@ public class ClientItemProcessorTest {
 	public void shouldReturnClientEntity() throws Exception {
 		Client client = createClient2();
 		ClientItemProcessor processor = new ClientItemProcessor();
-		ClientEntity entity = processor.process(client);
+		Client entity = processor.process(client);
 		
 		assertThat(entity.getId()).isEqualTo(TestConstants.ID_2);
 		assertThat(entity.getFullName()).isEqualTo(TestConstants.NAME_2 + " " + TestConstants.DESC_2);

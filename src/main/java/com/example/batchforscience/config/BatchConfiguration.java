@@ -57,7 +57,7 @@ public class BatchConfiguration {
 	public StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	private JdbcBatchItemWriter<ClientEntity> writerJdbc;
+	private JdbcBatchItemWriter<Client> writerJdbc;
 	
 	@Autowired
 	private RepositoryItemWriter<ClientEntity> writerRepo;
@@ -87,8 +87,8 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public JdbcBatchItemWriter<ClientEntity> writerJdbc(DataSource dataSource) {
-        return new JdbcBatchItemWriterBuilder<ClientEntity>()
+	public JdbcBatchItemWriter<Client> writerJdbc(DataSource dataSource) {
+        return new JdbcBatchItemWriterBuilder<Client>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .sql("INSERT INTO client (id, name, full_name, address, telephone, identity_number, description) "
                 		+ "VALUES (:id, :name, :fullName, :address, :telephone, :identityNumber, :description)")
@@ -116,9 +116,9 @@ public class BatchConfiguration {
 	@Bean
 	public Step toEntity() {
 		return stepBuilderFactory.get("toEntity")
-				.<Client, ClientEntity>chunk(chunkSize)
+				.<Client, Client>chunk(chunkSize)
 				.processor(processor())
-				.writer(writerRepo)
+				.writer(writerJdbc)
 				.reader(personItemReader)
 				.build();
 	}

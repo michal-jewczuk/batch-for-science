@@ -5,29 +5,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.example.batchforscience.domain.Client;
-import com.example.batchforscience.domain.ClientEntity;
 
-public class ClientItemProcessor implements ItemProcessor<Client, ClientEntity> {
+public class ClientItemProcessor implements ItemProcessor<Client, Client> {
 	
 	private static final Logger log = LoggerFactory.getLogger(ClientItemProcessor.class);
 
 	@Override
-	public ClientEntity process(Client item) throws Exception {
-		ClientEntity entity = new ClientEntity();
+	public Client process(Client item) throws Exception {
+		Client client = new Client();
 		
 		StringBuilder fullName = new StringBuilder();
 		fullName.append(item.getName()).append(" ").append(item.getDescription());
 		
-		entity.setId(item.getId());
-		entity.setName(item.getName());
-		entity.setDescription(item.getDescription());
-		entity.setAddress(item.getAddress());
-		entity.setTelephone(item.getTelephone());
-		entity.setIdentityNumber(item.getIdentityNumber());
-		entity.setFullName(fullName.toString());
+		client.setId(item.getId());
+		client.setName(item.getName());
+		client.setDescription(item.getDescription());
+		client.setAddress(item.getAddress());
+		client.setTelephone(item.getTelephone());
+		client.setIdentityNumber(item.getIdentityNumber());
+		client.setFullName(fullName.toString());
 		
-		log.info(entity.toString());
-		return entity;
+		log.info(client.toString());
+		return client;
 	}
 
 }

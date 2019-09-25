@@ -8,6 +8,7 @@ public class Client {
 	private String address;
 	private String telephone;
 	private String identityNumber;
+	private String fullName;
 
 	public Long getId() {
 		return id;
@@ -55,6 +56,20 @@ public class Client {
 
 	public void setIdentityNumber(String identityNumber) {
 		this.identityNumber = identityNumber;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	@Override
+	public String toString() {
+		return "Client [id=" + id + ", name=" + name + ", description=" + description + ", address=" + address
+				+ ", telephone=" + telephone + ", identityNumber=" + identityNumber + ", fullName=" + fullName + "]";
 	}
 
 }
