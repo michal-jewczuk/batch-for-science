@@ -1,13 +1,33 @@
 package com.example.batchforscience.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "client")
 public class Client {
 
+	@Id
 	private Long id;
+
+	@Column(name = "name", nullable = false)
 	private String name;
-	private String description;
+
+	@Column(name = "address", nullable = false)
 	private String address;
+
+	@Column(name = "telephone", nullable = false)
 	private String telephone;
+
+	@Column(name = "identity_number", nullable = false)
 	private String identityNumber;
+
+	@Column(name = "description", nullable = false)
+	private String description;
+
+	@Column(name = "full_name", nullable = false)
 	private String fullName;
 
 	public Long getId() {
@@ -24,14 +44,6 @@ public class Client {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public String getAddress() {
@@ -58,6 +70,14 @@ public class Client {
 		this.identityNumber = identityNumber;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getFullName() {
 		return fullName;
 	}
@@ -68,8 +88,9 @@ public class Client {
 
 	@Override
 	public String toString() {
-		return "Client [id=" + id + ", name=" + name + ", description=" + description + ", address=" + address
-				+ ", telephone=" + telephone + ", identityNumber=" + identityNumber + ", fullName=" + fullName + "]";
+		return "ClientEntity [id=" + id + ", name=" + name + ", address=" + address + ", telephone=" + telephone
+				+ ", identityNumber=" + identityNumber + ", description=" + description + ", fullName=" + fullName
+				+ "]";
 	}
 
 }

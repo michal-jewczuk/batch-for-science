@@ -36,7 +36,6 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.example.batchforscience.domain.Client;
-import com.example.batchforscience.domain.ClientEntity;
 import com.example.batchforscience.mappers.ClientMapper;
 import com.example.batchforscience.processor.ClientItemProcessor;
 import com.example.batchforscience.repository.ClientRepository;
@@ -60,10 +59,15 @@ public class BatchConfiguration {
 	private JdbcBatchItemWriter<Client> writerJdbc;
 	
 	@Autowired
-	private RepositoryItemWriter<ClientEntity> writerRepo;
+	private RepositoryItemWriter<Client> writerRepo;
 
 	@Autowired
-	private FlatFileItemReader<Client> personItemReader;
+	private FlatFileItemReader<Client> clientItemReader;
+	
+	@Bean
+	public ClientItemProcessor itemProcessor() {
+		return new ClientItemProcessor();
+	}
 
 	@Bean("partitioner")
 	@StepScope
@@ -82,11 +86,6 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public ClientItemProcessor processor() {
-		return new ClientItemProcessor();
-	}
-
-	@Bean
 	public JdbcBatchItemWriter<Client> writerJdbc(DataSource dataSource) {
         return new JdbcBatchItemWriterBuilder<Client>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
@@ -97,29 +96,29 @@ public class BatchConfiguration {
 	}
 	
 	@Bean
-	public RepositoryItemWriter<ClientEntity> writerRepo(ClientRepository clientRepository) {
-		return new RepositoryItemWriterBuilder<ClientEntity>()
-				.repository(clientRepository)
+	public RepositoryItemWriter<Client> writerRepo(ClientRepository repository) {
+		return new RepositoryItemWriterBuilder<Client>()
+				.repository(repository)
 				.methodName("save")
 				.build();
 	}
 
 	@Bean
-	public Job importUserJob(Step toEntity) {
+	public Job importUserJob(Step toClient) {
 		return jobBuilderFactory.get("importUserJob")
 				.incrementer(new RunIdIncrementer())
 				.flow(masterStep())
 				.end()
 				.build();
 	}
-
+	
 	@Bean
-	public Step toEntity() {
-		return stepBuilderFactory.get("toEntity")
-				.<Client, Client>chunk(chunkSize)
-				.processor(processor())
-				.writer(writerJdbc)
-				.reader(personItemReader)
+	public Step toClient() {
+		return stepBuilderFactory.get("toClient")
+				.<Client, Client>chunk(chunkSize)	
+				.reader(clientItemReader)
+				.processor(itemProcessor())
+				.writer(writerRepo)
 				.build();
 	}
 
@@ -137,15 +136,14 @@ public class BatchConfiguration {
 	@Qualifier("masterStep")
 	public Step masterStep() {
 		return stepBuilderFactory.get("masterStep")
-				.partitioner("toEntity", partitioner())
-				.step(toEntity())
+				.partitioner("toClient", partitioner())
+				.step(toClient())
 				.taskExecutor(taskExecutor())
 				.build();
 	}
 
 	@Bean
 	@StepScope
-	@Qualifier("clientItemReader")
 	@DependsOn("partitioner")
 	public FlatFileItemReader<Client> clientItemReader(@Value("#{stepExecutionContext['fileName']}") String filename)
 			throws MalformedURLException {
