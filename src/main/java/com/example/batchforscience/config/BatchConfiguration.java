@@ -37,6 +37,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.example.batchforscience.domain.Client;
 import com.example.batchforscience.domain.ClientEntity;
+import com.example.batchforscience.listener.JobCompletionListener;
 import com.example.batchforscience.mappers.ClientMapper;
 import com.example.batchforscience.processor.ClientItemProcessor;
 import com.example.batchforscience.repository.ClientRepository;
@@ -105,9 +106,10 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public Job importUserJob(Step toEntity) {
+	public Job importUserJob(JobCompletionListener listener, Step toEntity) {
 		return jobBuilderFactory.get("importUserJob")
 				.incrementer(new RunIdIncrementer())
+				.listener(listener)
 				.flow(masterStep())
 				.end()
 				.build();
