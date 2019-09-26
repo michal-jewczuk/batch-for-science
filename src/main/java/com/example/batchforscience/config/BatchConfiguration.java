@@ -61,7 +61,7 @@ public class BatchConfiguration {
 	private JdbcBatchItemWriter<Client> writerJdbc;
 	
 	@Autowired
-	private RepositoryItemWriter<Client> writerRepo;
+	private RepositoryItemWriter<ClientEntity> writerRepo;
 
 	@Autowired
 	private FlatFileItemReader<Client> clientItemReader;
@@ -98,15 +98,15 @@ public class BatchConfiguration {
 	}
 	
 	@Bean
-	public RepositoryItemWriter<Client> writerRepo(ClientRepository repository) {
-		return new RepositoryItemWriterBuilder<Client>()
+	public RepositoryItemWriter<ClientEntity> writerRepo(ClientRepository repository) {
+		return new RepositoryItemWriterBuilder<ClientEntity>()
 				.repository(repository)
 				.methodName("save")
 				.build();
 	}
 
 	@Bean
-	public Job importUserJob(JobCompletionListener listener, Step toEntity) {
+	public Job importUserJob(JobCompletionListener listener, Step toClient) {
 		return jobBuilderFactory.get("importUserJob")
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)
@@ -121,7 +121,7 @@ public class BatchConfiguration {
 				.<Client, Client>chunk(chunkSize)	
 				.reader(clientItemReader)
 				.processor(itemProcessor())
-				.writer(writerRepo)
+				.writer(writerJdbc)
 				.build();
 	}
 
