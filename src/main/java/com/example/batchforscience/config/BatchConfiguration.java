@@ -106,11 +106,7 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-<<<<<<< HEAD
-	public Job importUserJob(Step toClient) {
-=======
 	public Job importUserJob(JobCompletionListener listener, Step toEntity) {
->>>>>>> backToTheFuture
 		return jobBuilderFactory.get("importUserJob")
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)
