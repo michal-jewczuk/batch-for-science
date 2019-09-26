@@ -12,7 +12,9 @@ import com.example.batchforscience.config.BatchConfiguration;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = {"com.example.batchforscience.listener"})
+@ComponentScan(basePackages = {"com.example.batchforscience.listener",
+		"com.example.batchforscience.mappers",
+		"com.example.batchforscience.writer"})
 @Import({BatchConfiguration.class})
 @PropertySource("classpath:application.yml")
 public class TestConfiguration {

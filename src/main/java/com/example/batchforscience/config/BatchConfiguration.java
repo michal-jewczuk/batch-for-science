@@ -3,8 +3,6 @@ package com.example.batchforscience.config;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import javax.sql.DataSource;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -14,11 +12,6 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.partition.support.MultiResourcePartitioner;
 import org.springframework.batch.core.partition.support.Partitioner;
-import org.springframework.batch.item.data.RepositoryItemWriter;
-import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
-import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
@@ -36,11 +29,10 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.example.batchforscience.domain.Client;
-import com.example.batchforscience.domain.ClientEntity;
 import com.example.batchforscience.listener.JobCompletionListener;
 import com.example.batchforscience.mappers.ClientMapper;
 import com.example.batchforscience.processor.ClientItemProcessor;
-import com.example.batchforscience.repository.ClientRepository;
+import com.example.batchforscience.writer.ClientItemWriter;
 
 @Configuration
 @EnableBatchProcessing
@@ -58,13 +50,10 @@ public class BatchConfiguration {
 	public StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	private JdbcBatchItemWriter<Client> writerJdbc;
+	private FlatFileItemReader<Client> clientItemReader;
 	
 	@Autowired
-	private RepositoryItemWriter<ClientEntity> writerRepo;
-
-	@Autowired
-	private FlatFileItemReader<Client> clientItemReader;
+	private ClientItemWriter customWriter;
 	
 	@Bean
 	public ClientItemProcessor itemProcessor() {
@@ -88,24 +77,6 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public JdbcBatchItemWriter<Client> writerJdbc(DataSource dataSource) {
-        return new JdbcBatchItemWriterBuilder<Client>()
-                .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-                .sql("INSERT INTO client (id, name, full_name, address, telephone, identity_number, description) "
-                		+ "VALUES (:id, :name, :fullName, :address, :telephone, :identityNumber, :description)")
-                .dataSource(dataSource)
-                .build();
-	}
-	
-	@Bean
-	public RepositoryItemWriter<ClientEntity> writerRepo(ClientRepository repository) {
-		return new RepositoryItemWriterBuilder<ClientEntity>()
-				.repository(repository)
-				.methodName("save")
-				.build();
-	}
-
-	@Bean
 	public Job importUserJob(JobCompletionListener listener, Step toClient) {
 		return jobBuilderFactory.get("importUserJob")
 				.incrementer(new RunIdIncrementer())
@@ -121,7 +92,7 @@ public class BatchConfiguration {
 				.<Client, Client>chunk(chunkSize)	
 				.reader(clientItemReader)
 				.processor(itemProcessor())
-				.writer(writerJdbc)
+				.writer(customWriter)
 				.build();
 	}
 

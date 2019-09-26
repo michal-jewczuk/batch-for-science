@@ -12,7 +12,7 @@ import com.example.batchforscience.domain.ClientEntity;
 @Component
 public class ClientEntityMapper {
 
-	ClientEntity mapToEntity(Client client) {
+	public ClientEntity mapToEntity(Client client) {
 		ClientEntity entity = new ClientEntity();
 		entity.setId(client.getId());
 		entity.setName(client.getName());
@@ -25,7 +25,7 @@ public class ClientEntityMapper {
 		return entity;
 	}
 	
-	List<ClientEntity> mapToEntities(List<Client> clients) {
+	public List<ClientEntity> mapToEntities(List<Client> clients) {
 		List<ClientEntity> entities = new ArrayList<>();
 		entities.addAll(clients.stream()
 				.map(e -> mapToEntity(e))
