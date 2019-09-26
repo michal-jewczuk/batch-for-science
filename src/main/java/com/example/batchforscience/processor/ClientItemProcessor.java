@@ -12,21 +12,14 @@ public class ClientItemProcessor implements ItemProcessor<Client, Client> {
 
 	@Override
 	public Client process(Client item) throws Exception {
-		Client client = new Client();
 		
 		StringBuilder fullName = new StringBuilder();
 		fullName.append(item.getName()).append(" ").append(item.getDescription());
 		
-		client.setId(item.getId());
-		client.setName(item.getName());
-		client.setDescription(item.getDescription());
-		client.setAddress(item.getAddress());
-		client.setTelephone(item.getTelephone());
-		client.setIdentityNumber(item.getIdentityNumber());
-		client.setFullName(fullName.toString());
+		item.setFullName(fullName.toString());
 		
-		log.info(client.toString());
-		return client;
+		log.info(item.toString());
+		return item;
 	}
 
 }
