@@ -8,24 +8,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.batchforscience.mock.domain.InvoiceEntity;
-import com.example.batchforscience.mock.repository.InvoiceRepository;
+import com.example.batchforscience.mock.domain.OrderEntity;
+import com.example.batchforscience.mock.repository.OrderRepository;
 
 @RestController
-@RequestMapping("/mock/invoices")
-public class InvoiceRestController {
+@RequestMapping("/mock/orders")
+public class OrderRestController {
 	
 	@Autowired
-	private InvoiceRepository invoiceRepository;
+	private OrderRepository orderRepository;
 	
 	@GetMapping("")
-	public List<InvoiceEntity> showAllInvoices() {
-		return invoiceRepository.findAll();
+	public List<OrderEntity> getAllOrders() {
+		return orderRepository.findAll();
 	}
 	
 	@GetMapping("/{clientId}")
-	public List<InvoiceEntity> showAllClientInvoices(@PathVariable Long clientId) {
-		return invoiceRepository.findAllByClient(clientId);
+	public List<OrderEntity> showAllClientOrders(@PathVariable Long clientId) {
+		return orderRepository.findAllByClient(clientId);
 	}
 
 }

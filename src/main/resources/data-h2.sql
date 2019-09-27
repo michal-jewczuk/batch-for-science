@@ -63,3 +63,37 @@ INSERT INTO invoice(id, client_id, amount, is_paid)
 	
 INSERT INTO invoice(id, client_id, amount, is_paid)
 	VALUES(28, 216, 9000, true);
+	
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(1, 101, '2017-01-01');
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(2, 101, '2018-01-01');
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(3, 101, '2019-01-01');
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(4, 101, '2020-01-01');
+	
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(5, 105, '2020-01-01');
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(6, 105, '2020-01-01');
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(7, 105, '2019-01-01');
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(8, 105, '2020-01-01');
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(9, 105, '2020-01-01');
+
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(10, 211, '2018-01-01');
+	
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(11, 212, '2020-01-01');
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(12, 212, '2019-01-01');
+	
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(13, 215, '2021-01-01');
+	
+INSERT INTO orders(id, client_id, ready_on)
+	VALUES(14, 216, '2020-03-01');
