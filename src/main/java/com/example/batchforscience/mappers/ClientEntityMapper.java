@@ -21,6 +21,8 @@ public class ClientEntityMapper {
 		entity.setAddress(client.getAddress());
 		entity.setIdentityNumber(client.getIdentityNumber());
 		entity.setTelephone(client.getTelephone());
+		entity.setDebt(client.getDebt());
+		entity.setCurrentOrders(client.getCurrentOrders());
 		
 		return entity;
 	}

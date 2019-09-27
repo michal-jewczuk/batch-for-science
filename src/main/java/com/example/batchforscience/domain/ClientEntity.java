@@ -1,5 +1,7 @@
 package com.example.batchforscience.domain;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -29,6 +31,12 @@ public class ClientEntity {
 
 	@Column(name = "full_name", nullable = false)
 	private String fullName;
+	
+	@Column(name = "debt", nullable = true)
+	private BigDecimal debt;
+	
+	@Column(name = "current_orders", nullable = true)
+	private long currentOrders;
 
 	public Long getId() {
 		return id;
@@ -86,11 +94,28 @@ public class ClientEntity {
 		this.fullName = fullName;
 	}
 
+	public BigDecimal getDebt() {
+		return debt;
+	}
+
+	public void setDebt(BigDecimal debt) {
+		this.debt = debt;
+	}
+
+	public long getCurrentOrders() {
+		return currentOrders;
+	}
+
+	public void setCurrentOrders(long currentOrders) {
+		this.currentOrders = currentOrders;
+	}
+
 	@Override
 	public String toString() {
+		String hasDebt = debt.longValue() > 0 ? "yes" : "no";
 		return "ClientEntity [id=" + id + ", name=" + name + ", address=" + address + ", telephone=" + telephone
 				+ ", identityNumber=" + identityNumber + ", description=" + description + ", fullName=" + fullName
-				+ "]";
+				+ ", hasDebt=" + hasDebt + ", currentOrders=" + currentOrders + "]";
 	}
 
 }
