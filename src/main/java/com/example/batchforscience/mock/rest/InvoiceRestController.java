@@ -22,12 +22,6 @@ public class InvoiceRestController {
 	
 	@GetMapping("")
 	public List<InvoiceEntity> showAllInvoices() {
-		try {
-			TimeUnit.MILLISECONDS.sleep(MockConfig.DELAY);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return invoiceRepository.findAll();
 	}
 	

@@ -29,7 +29,7 @@ public class ClientEntity {
 	@Column(name = "description", nullable = false)
 	private String description;
 
-	@Column(name = "full_name", nullable = false)
+	@Column(name = "full_name", nullable = true)
 	private String fullName;
 	
 	@Column(name = "debt", nullable = true)
