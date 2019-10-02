@@ -3,6 +3,8 @@ package com.example.batchforscience.mock.rest;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,8 @@ import com.example.batchforscience.mock.repository.OrderRepository;
 @RequestMapping("/mock/orders")
 public class OrderRestController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(OrderRestController.class);
+	
 	@Autowired
 	private OrderRepository orderRepository;
 	
@@ -27,6 +31,7 @@ public class OrderRestController {
 	
 	@GetMapping("/{clientId}")
 	public List<OrderEntity> showAllClientOrders(@PathVariable Long clientId) {
+		logger.info("=== ORDERS FOR " + clientId);
 		try {
 			TimeUnit.MILLISECONDS.sleep(MockConfig.DELAY);
 		} catch (InterruptedException e) {
