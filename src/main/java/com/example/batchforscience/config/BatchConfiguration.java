@@ -13,9 +13,6 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.partition.support.MultiResourcePartitioner;
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,15 +20,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.example.batchforscience.domain.Client;
 import com.example.batchforscience.listener.JobCompletionListener;
-import com.example.batchforscience.mappers.ClientMapper;
 import com.example.batchforscience.processor.ClientItemProcessor;
+import com.example.batchforscience.reader.ClientItemReader;
 import com.example.batchforscience.writer.ClientItemWriter;
 
 @Configuration
@@ -55,11 +51,10 @@ public class BatchConfiguration {
 	@Autowired
 	private ClientItemWriter customWriter;
 	
-	@Bean
-	public ClientItemProcessor itemProcessor() {
-		return new ClientItemProcessor();
-	}
-
+	@Autowired
+	private ClientItemProcessor clientItemProcessor;
+	
+	
 	@Bean("partitioner")
 	@StepScope
 	public Partitioner partitioner() {
@@ -77,8 +72,8 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public Job importUserJob(JobCompletionListener listener, Step toClient) {
-		return jobBuilderFactory.get("importUserJob")
+	public Job importClientJob(JobCompletionListener listener, Step toClient) {
+		return jobBuilderFactory.get("importClientJob")
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)
 				.flow(masterStep())
@@ -91,7 +86,7 @@ public class BatchConfiguration {
 		return stepBuilderFactory.get("toClient")
 				.<Client, Client>chunk(chunkSize)	
 				.reader(clientItemReader)
-				.processor(itemProcessor())
+				.processor(clientItemProcessor)
 				.writer(customWriter)
 				.build();
 	}
@@ -119,20 +114,9 @@ public class BatchConfiguration {
 	@Bean
 	@StepScope
 	@DependsOn("partitioner")
-	public FlatFileItemReader<Client> clientItemReader(@Value("#{stepExecutionContext['fileName']}") String filename)
+	public FlatFileItemReader<Client> clientReader(@Value("#{stepExecutionContext['fileName']}") String filename)
 			throws MalformedURLException {
-		
-		DefaultLineMapper<Client> lineMapper = new DefaultLineMapper<Client>();
-		lineMapper.setLineTokenizer(new DelimitedLineTokenizer(delimiter));
-		lineMapper.setFieldSetMapper(new ClientMapper());
-
-		return new FlatFileItemReaderBuilder<Client>().name("clientItemReader")
-				.resource(new UrlResource(filename))
-				.delimited()
-				.names(new String[]{"id", "name", "description", "address", "telephone", "identityNumber"})
-				.lineMapper(lineMapper)
-				.linesToSkip(linesToSkip)
-				.build();
+		return ClientItemReader.reader(filename, delimiter, linesToSkip);
 	}      
 	
 }

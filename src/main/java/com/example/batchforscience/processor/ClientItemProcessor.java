@@ -8,10 +8,12 @@ import java.util.concurrent.Executors;
 
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.example.batchforscience.domain.Client;
 import com.example.batchforscience.service.ClientService;
 
+@Component
 public class ClientItemProcessor implements ItemProcessor<Client, Client> {
 	
 	@Autowired
