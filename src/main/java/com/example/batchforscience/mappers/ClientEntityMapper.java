@@ -4,13 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.batchforscience.domain.Client;
-import com.example.batchforscience.domain.ClientEntity;
+import com.example.batchforscience.domain.entities.ClientEntity;
 
 @Component
 public class ClientEntityMapper {
+	
+	@Autowired
+	private BankAccountEntityMapper baMapper;
+	
+	@Autowired
+	private LocationEntityMapper lMapper;
 
 	public ClientEntity mapToEntity(Client client) {
 		ClientEntity entity = new ClientEntity();
@@ -24,6 +31,8 @@ public class ClientEntityMapper {
 		entity.setDebt(client.getDebt());
 		entity.setCurrentOrders(client.getCurrentOrders());
 		entity.setBusiness(client.isBusiness());
+		entity.setAccounts(baMapper.mapToEntities(client.getAccounts()));
+		entity.setLocations(lMapper.mapToEntities(client.getLocations()));
 		
 		return entity;
 	}

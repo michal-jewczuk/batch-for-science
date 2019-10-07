@@ -1,10 +1,15 @@
-package com.example.batchforscience.domain;
+package com.example.batchforscience.domain.entities;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -40,6 +45,14 @@ public class ClientEntity {
 	
 	@Column(name = "business", nullable = false)
 	private boolean business;
+	
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "client_id")
+	private Set<BankAccountEntity> accounts;
+	
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "client_id")
+	private Set<LocationEntity> locations;
 
 	public Long getId() {
 		return id;
@@ -120,13 +133,36 @@ public class ClientEntity {
 	public void setBusiness(boolean business) {
 		this.business = business;
 	}
+	
+	public Set<BankAccountEntity> getAccounts() {
+		if (accounts == null) {
+			accounts = new HashSet<BankAccountEntity>();
+		}
+		return accounts;
+	}
+
+	public void setAccounts(Set<BankAccountEntity> accounts) {
+		this.accounts = accounts;
+	}
+
+	public Set<LocationEntity> getLocations() {
+		if (locations == null) {
+			locations = new HashSet<LocationEntity>();
+		}
+		return locations;
+	}
+
+	public void setLocations(Set<LocationEntity> locations) {
+		this.locations = locations;
+	}
 
 	@Override
 	public String toString() {
 		String hasDebt = debt.longValue() > 0 ? "yes" : "no";
 		return "ClientEntity [id=" + id + ", name=" + name + ", address=" + address + ", telephone=" + telephone
 				+ ", identityNumber=" + identityNumber + ", description=" + description + ", fullName=" + fullName
-				+ ", hasDebt=" + hasDebt + ", currentOrders=" + currentOrders + ", business=" +  business + "]";
+				+ ", hasDebt=" + hasDebt + ", currentOrders=" + currentOrders + ", business=" +  business 
+				+ ", # of accounts=" + accounts.size() + ", # of locations=" + locations.size() + "]";
 	}
 
 }

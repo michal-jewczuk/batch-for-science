@@ -1,6 +1,8 @@
 package com.example.batchforscience.domain;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Client {
 
@@ -14,6 +16,8 @@ public class Client {
 	private BigDecimal debt;
 	private long currentOrders;
 	private boolean business;
+	private Set<BankAccount> accounts;
+	private Set<Location> locations;
 
 	public Long getId() {
 		return id;
@@ -93,6 +97,28 @@ public class Client {
 
 	public void setBusiness(boolean business) {
 		this.business = business;
+	}
+
+	public Set<BankAccount> getAccounts() {
+		if (accounts == null) {
+			accounts = new HashSet<BankAccount>();
+		}
+		return accounts;
+	}
+
+	public void setAccounts(Set<BankAccount> accounts) {
+		this.accounts = accounts;
+	}
+
+	public Set<Location> getLocations() {
+		if (locations == null) {
+			locations = new HashSet<Location>();
+		}
+		return locations;
+	}
+
+	public void setLocations(Set<Location> locations) {
+		this.locations = locations;
 	}
 
 }
