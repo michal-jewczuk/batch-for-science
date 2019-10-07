@@ -24,7 +24,7 @@ public class ClientItemReader {
 		return new FlatFileItemReaderBuilder<Client>().name("clientItemReader")
 				.resource(new UrlResource(fileName))
 				.delimited()
-				.names(new String[] {"id", "name", "description", "address", "telephone", "identityNumber"})
+				.names(new String[] {"code", "id", "name", "description", "address", "telephone", "identityNumber"})
 				.lineMapper(lineMapper)
 				.linesToSkip(linesToSkip)
 				.build();

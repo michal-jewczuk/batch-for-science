@@ -11,17 +11,17 @@ public class ClientMapper implements FieldSetMapper<Client> {
 	@Override
 	public Client mapFieldSet(FieldSet fieldSet) throws BindException {	
 		// should happen only with last line
-		if (fieldSet.getFieldCount() < 2) {
+		if (fieldSet.readString(0).equals("99")) {
 			return null;
 		}
 		
 		Client client = new Client();
-		client.setId(fieldSet.readLong(0));
-		client.setName(fieldSet.readString(1));
-		client.setDescription(fieldSet.readString(2));
-		client.setAddress(fieldSet.readString(3));
-		client.setTelephone(fieldSet.readString(4));
-		client.setIdentityNumber(fieldSet.readString(5));
+		client.setId(fieldSet.readLong(1));
+		client.setName(fieldSet.readString(2));
+		client.setDescription(fieldSet.readString(3));
+		client.setAddress(fieldSet.readString(4));
+		client.setTelephone(fieldSet.readString(5));
+		client.setIdentityNumber(fieldSet.readString(6));
 		
 		return client;
 	}
