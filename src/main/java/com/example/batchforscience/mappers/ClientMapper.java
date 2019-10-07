@@ -15,6 +15,8 @@ public class ClientMapper implements FieldSetMapper<Client> {
 			return null;
 		}
 		
+		boolean isBusiness = fieldSet.readString(0).equals("10") ? false : true;
+		
 		Client client = new Client();
 		client.setId(fieldSet.readLong(1));
 		client.setName(fieldSet.readString(2));
@@ -22,6 +24,7 @@ public class ClientMapper implements FieldSetMapper<Client> {
 		client.setAddress(fieldSet.readString(4));
 		client.setTelephone(fieldSet.readString(5));
 		client.setIdentityNumber(fieldSet.readString(6));
+		client.setBusiness(isBusiness);
 		
 		return client;
 	}

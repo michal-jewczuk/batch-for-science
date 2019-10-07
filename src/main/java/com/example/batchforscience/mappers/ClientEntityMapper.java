@@ -23,6 +23,7 @@ public class ClientEntityMapper {
 		entity.setTelephone(client.getTelephone());
 		entity.setDebt(client.getDebt());
 		entity.setCurrentOrders(client.getCurrentOrders());
+		entity.setBusiness(client.isBusiness());
 		
 		return entity;
 	}

@@ -37,6 +37,9 @@ public class ClientEntity {
 	
 	@Column(name = "current_orders", nullable = true)
 	private long currentOrders;
+	
+	@Column(name = "business", nullable = false)
+	private boolean business;
 
 	public Long getId() {
 		return id;
@@ -110,12 +113,20 @@ public class ClientEntity {
 		this.currentOrders = currentOrders;
 	}
 
+	public boolean isBusiness() {
+		return business;
+	}
+
+	public void setBusiness(boolean business) {
+		this.business = business;
+	}
+
 	@Override
 	public String toString() {
 		String hasDebt = debt.longValue() > 0 ? "yes" : "no";
 		return "ClientEntity [id=" + id + ", name=" + name + ", address=" + address + ", telephone=" + telephone
 				+ ", identityNumber=" + identityNumber + ", description=" + description + ", fullName=" + fullName
-				+ ", hasDebt=" + hasDebt + ", currentOrders=" + currentOrders + "]";
+				+ ", hasDebt=" + hasDebt + ", currentOrders=" + currentOrders + ", business=" +  business + "]";
 	}
 
 }

@@ -13,6 +13,7 @@ public class Client {
 	private String fullName;
 	private BigDecimal debt;
 	private long currentOrders;
+	private boolean business;
 
 	public Long getId() {
 		return id;
@@ -69,6 +70,7 @@ public class Client {
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
+
 	public BigDecimal getDebt() {
 		return debt;
 	}
@@ -83,6 +85,14 @@ public class Client {
 
 	public void setCurrentOrders(long currentOrders) {
 		this.currentOrders = currentOrders;
+	}
+
+	public boolean isBusiness() {
+		return business;
+	}
+
+	public void setBusiness(boolean business) {
+		this.business = business;
 	}
 
 }
