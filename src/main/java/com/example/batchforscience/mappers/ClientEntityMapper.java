@@ -19,7 +19,7 @@ public class ClientEntityMapper {
 	@Autowired
 	private LocationEntityMapper lMapper;
 
-	public ClientEntity mapToEntity(Client client) {
+	public ClientEntity mapToEntity(Client client) {	
 		ClientEntity entity = new ClientEntity();
 		entity.setId(client.getId());
 		entity.setName(client.getName());
@@ -31,8 +31,12 @@ public class ClientEntityMapper {
 		entity.setDebt(client.getDebt());
 		entity.setCurrentOrders(client.getCurrentOrders());
 		entity.setBusiness(client.isBusiness());
-		entity.setAccounts(baMapper.mapToEntities(client.getAccounts()));
-		entity.setLocations(lMapper.mapToEntities(client.getLocations()));
+		if (client.getAccounts().size() > 0) {
+			entity.setAccounts(baMapper.mapToEntities(client.getAccounts()));			
+		}
+		if (client.getLocations().size() > 0) {
+			entity.setLocations(lMapper.mapToEntities(client.getLocations()));
+		}
 		
 		return entity;
 	}

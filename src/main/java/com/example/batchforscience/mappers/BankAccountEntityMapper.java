@@ -11,12 +11,12 @@ import com.example.batchforscience.domain.entities.BankAccountEntity;
 @Component
 public class BankAccountEntityMapper {
 	
-	public BankAccountEntity mapToEntity(BankAccount account) {
+	public BankAccountEntity mapToEntity(BankAccount account) {	
 		BankAccountEntity entity = new BankAccountEntity();
 		entity.setId(account.getId());
 		entity.setBankName(account.getBankName());
 		entity.setAccountNumber(account.getAccountNumber());
-		
+
 		return entity;
 	}
 	

@@ -42,4 +42,9 @@ public class BankAccountEntity {
 		this.accountNumber = accountNumber;
 	}
 
+	@Override
+	public String toString() {
+		return "BankAccountEntity [id=" + id + ", bankName=" + bankName + ", accountNumber=" + accountNumber + "]";
+	}
+
 }

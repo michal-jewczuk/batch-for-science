@@ -2,6 +2,8 @@ package com.example.batchforscience.writer;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,7 @@ public class ClientItemWriter implements ItemWriter<Client> {
 	private ClientRepository repository;
 
 	@Override
+	@Transactional
 	public void write(List<? extends Client> items) throws Exception {
 		@SuppressWarnings("unchecked")
 		List<ClientEntity> entities = mapper.mapToEntities((List<Client>) items);

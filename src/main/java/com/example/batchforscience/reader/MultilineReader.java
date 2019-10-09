@@ -1,9 +1,12 @@
 package com.example.batchforscience.reader;
 
+import java.util.Set;
+
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.batch.item.support.SingleItemPeekableItemReader;
 
+import com.example.batchforscience.domain.BankAccount;
 import com.example.batchforscience.domain.Client;
 
 public class MultilineReader extends SingleItemPeekableItemReader<Client> {
@@ -22,11 +25,15 @@ public class MultilineReader extends SingleItemPeekableItemReader<Client> {
                 return item;
             }
 
-            //logic to determine if next line in file relates to same object
-            boolean matches = false; 
+            //non client line will be without client id
+            boolean matches = possibleRelatedObject.getId() == null; 
 
             if (matches) {
-                //item.addRelatedInfo(super.read());
+            	// add logic for locations too
+            	Client withAditionalInfo = super.read();
+            	Set<BankAccount> accounts = item.getAccounts();	
+            	accounts.addAll(withAditionalInfo.getAccounts());
+            	item.setAccounts(accounts);
             } else {
                 return item;
             }

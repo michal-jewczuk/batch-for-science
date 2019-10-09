@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -46,11 +47,11 @@ public class ClientEntity {
 	@Column(name = "business", nullable = false)
 	private boolean business;
 	
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "client_id")
 	private Set<BankAccountEntity> accounts;
 	
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "client_id")
 	private Set<LocationEntity> locations;
 
@@ -156,13 +157,22 @@ public class ClientEntity {
 		this.locations = locations;
 	}
 
-	@Override
+/*	@Override
 	public String toString() {
 		String hasDebt = debt.longValue() > 0 ? "yes" : "no";
 		return "ClientEntity [id=" + id + ", name=" + name + ", address=" + address + ", telephone=" + telephone
 				+ ", identityNumber=" + identityNumber + ", description=" + description + ", fullName=" + fullName
 				+ ", hasDebt=" + hasDebt + ", currentOrders=" + currentOrders + ", business=" +  business 
 				+ ", # of accounts=" + accounts.size() + ", # of locations=" + locations.size() + "]";
+	}*/
+	
+	@Override
+	public String toString() {
+		String hasDebt = debt.longValue() > 0 ? "yes" : "no";
+		return "ClientEntity [id=" + id + ", name=" + name + ", address=" + address + ", telephone=" + telephone
+				+ ", identityNumber=" + identityNumber + ", description=" + description + ", fullName=" + fullName
+				+ ", hasDebt=" + hasDebt + ", currentOrders=" + currentOrders + ", business=" +  business 
+				+ ", accounts=" + accounts + ", # of locations=" + locations.size() + "]";
 	}
 
 }

@@ -2,6 +2,8 @@ package com.example.batchforscience.config;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -14,8 +16,9 @@ import org.springframework.batch.core.partition.support.MultiResourcePartitioner
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.item.file.transform.LineTokenizer;
+import org.springframework.batch.item.file.transform.PatternMatchingCompositeLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,9 +52,9 @@ public class BatchConfiguration {
 
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
-
+	
 	@Autowired
-	private FlatFileItemReader<Client> clientItemReader;
+	private MultilineReader customReader;
 	
 	@Autowired
 	private ClientItemWriter customWriter;
@@ -90,7 +93,7 @@ public class BatchConfiguration {
 	public Step toClient() {
 		return stepBuilderFactory.get("toClient")
 				.<Client, Client>chunk(chunkSize)	
-				.reader(customReader())
+				.reader(customReader)
 				.processor(clientItemProcessor)
 				.writer(customWriter)
 				.build();
@@ -117,30 +120,65 @@ public class BatchConfiguration {
 	}
 	
 	@Bean
-	public MultilineReader customReader() {
+	@StepScope
+	@DependsOn("partitioner")
+	public MultilineReader customReader(@Value("#{stepExecutionContext['fileName']}") String fileName) 
+			throws MalformedURLException {
 		MultilineReader reader = new MultilineReader();
-		reader.setDelegate(clientItemReader);
+		
+		FlatFileItemReader<Client> delegate = 
+				new FlatFileItemReaderBuilder<Client>()
+					.name("clientItemReader")
+					.resource(new UrlResource(fileName))
+					.lineTokenizer(orderFileTokenizer())
+					.fieldSetMapper(new ClientMapper())
+					.linesToSkip(linesToSkip)
+					.build();
+		
+		reader.setDelegate(delegate);
 		
 		return reader;
 	}
-
+	
 	@Bean
-	@StepScope
-	@DependsOn("partitioner")
-	public FlatFileItemReader<Client> clientReader(@Value("#{stepExecutionContext['fileName']}") String fileName)
-			throws MalformedURLException {
-		
-		DefaultLineMapper<Client> lineMapper = new DefaultLineMapper<Client>();
-		lineMapper.setLineTokenizer(new DelimitedLineTokenizer(delimiter));
-		lineMapper.setFieldSetMapper(new ClientMapper());
+	public PatternMatchingCompositeLineTokenizer orderFileTokenizer() {
+	        PatternMatchingCompositeLineTokenizer tokenizer =
+	                        new PatternMatchingCompositeLineTokenizer();
 
-		return new FlatFileItemReaderBuilder<Client>().name("clientItemReader")
-				.resource(new UrlResource(fileName))
-				.delimited()
-				.names(new String[] {"code", "id", "name", "description", "address", "telephone", "identityNumber"})
-				.lineMapper(lineMapper)
-				.linesToSkip(linesToSkip)
-				.build();
-	}      
+	        Map<String, LineTokenizer> tokenizers = new HashMap<>(5);
+
+	        tokenizers.put("10*", clientTokenizer());
+	        tokenizers.put("20*", clientTokenizer());
+	        tokenizers.put("21*", bankAccountTokenizer());
+	        tokenizers.put("99*", endLineTokenizer());
+
+	        tokenizer.setTokenizers(tokenizers);
+
+	        return tokenizer;
+	}
+	
+	@Bean
+	public DelimitedLineTokenizer clientTokenizer() {
+		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer(delimiter);
+		tokenizer.setNames(new String[] {"code", "id", "name", "description", "address", "telephone", "identityNumber"});
+		
+		return tokenizer;
+	}
+	
+	@Bean
+	public DelimitedLineTokenizer bankAccountTokenizer() {
+		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer(delimiter);
+		tokenizer.setNames(new String[] {"code", "id", "bankName", "accountNumber"});
+		
+		return tokenizer;
+	}
+	
+	@Bean
+	public DelimitedLineTokenizer endLineTokenizer() {
+		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer(delimiter);
+		tokenizer.setNames(new String[] {"code", "info"});
+		
+		return tokenizer;
+	}
 	
 }
