@@ -1,9 +1,13 @@
 01;created at 2019-10-09
 20;211;JillR;Desc1;Addr1;1234;XUI9
 21;2111;BoA;999999888
+22;2111;firstLocation;firstAddress;firstPost
+22;2112;secondLocation;secondAddress;secondPost
 10;212;JoeR;Desc2;Addr2;1234;XUI8
+22;2121;should;be;omitted
 10;213;JustinR;Desc3;Addr3;1234;XUI7
 20;214;JaneR;Desc4;Addr4;1234;XUI6
+22;2141;location;before;accounts
 21;2141;Santander;333888444
 21;2142;Santander;333999555
 10;215;JohnR;Desc5;Addr5;1234;XUI5

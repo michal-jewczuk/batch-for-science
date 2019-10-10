@@ -2,8 +2,11 @@
 10;101;Jill;Desc101;Addr101;1234;XUI9
 10;102;Joe;Desc102;Addr102;1234;XUI8
 20;103;Justin;Desc103;Addr103;1234;XUI7
+22;1031;homeAddress;notshowing;forgotten
+22;1032;grandma;Address line; post line
 20;104;Jane;Desc104;Addr104;1234;XUI6
 21;1041;GNB;111222333
+22;1041;secretLocation;secret;secret
 21;1042;GNB;111222444
 10;105;John;Desc105;Addr105;1234;XUI5
 99;contains 5 entities

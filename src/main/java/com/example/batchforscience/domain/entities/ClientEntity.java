@@ -156,15 +156,6 @@ public class ClientEntity {
 	public void setLocations(Set<LocationEntity> locations) {
 		this.locations = locations;
 	}
-
-/*	@Override
-	public String toString() {
-		String hasDebt = debt.longValue() > 0 ? "yes" : "no";
-		return "ClientEntity [id=" + id + ", name=" + name + ", address=" + address + ", telephone=" + telephone
-				+ ", identityNumber=" + identityNumber + ", description=" + description + ", fullName=" + fullName
-				+ ", hasDebt=" + hasDebt + ", currentOrders=" + currentOrders + ", business=" +  business 
-				+ ", # of accounts=" + accounts.size() + ", # of locations=" + locations.size() + "]";
-	}*/
 	
 	@Override
 	public String toString() {
@@ -172,7 +163,7 @@ public class ClientEntity {
 		return "ClientEntity [id=" + id + ", name=" + name + ", address=" + address + ", telephone=" + telephone
 				+ ", identityNumber=" + identityNumber + ", description=" + description + ", fullName=" + fullName
 				+ ", hasDebt=" + hasDebt + ", currentOrders=" + currentOrders + ", business=" +  business 
-				+ ", accounts=" + accounts + ", # of locations=" + locations.size() + "]";
+				+ ", accounts=" + accounts + ", locations=" + locations + "]";
 	}
 
 }

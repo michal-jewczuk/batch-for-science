@@ -150,6 +150,7 @@ public class BatchConfiguration {
 	        tokenizers.put("10*", clientTokenizer());
 	        tokenizers.put("20*", clientTokenizer());
 	        tokenizers.put("21*", bankAccountTokenizer());
+	        tokenizers.put("22*", locationTokenizer());
 	        tokenizers.put("99*", endLineTokenizer());
 
 	        tokenizer.setTokenizers(tokenizers);
@@ -169,6 +170,14 @@ public class BatchConfiguration {
 	public DelimitedLineTokenizer bankAccountTokenizer() {
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer(delimiter);
 		tokenizer.setNames(new String[] {"code", "id", "bankName", "accountNumber"});
+		
+		return tokenizer;
+	}
+	
+	@Bean
+	public DelimitedLineTokenizer locationTokenizer() {
+		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer(delimiter);
+		tokenizer.setNames(new String[] {"code", "id", "codeName", "address", "post"});
 		
 		return tokenizer;
 	}

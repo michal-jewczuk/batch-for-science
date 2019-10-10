@@ -8,6 +8,7 @@ import org.springframework.batch.item.support.SingleItemPeekableItemReader;
 
 import com.example.batchforscience.domain.BankAccount;
 import com.example.batchforscience.domain.Client;
+import com.example.batchforscience.domain.Location;
 
 public class MultilineReader extends SingleItemPeekableItemReader<Client> {
 
@@ -26,18 +27,29 @@ public class MultilineReader extends SingleItemPeekableItemReader<Client> {
             }
 
             //non client line will be without client id
-            boolean matches = possibleRelatedObject.getId() == null; 
-
-            if (matches) {
-            	// add logic for locations too
-            	Client withAditionalInfo = super.read();
-            	Set<BankAccount> accounts = item.getAccounts();	
-            	accounts.addAll(withAditionalInfo.getAccounts());
-            	item.setAccounts(accounts);
+            if (possibleRelatedObject.getId() == null) {
+            	Client withAdditionalInfo = super.read();
+            	setAdditionalInfo(item, withAdditionalInfo);
             } else {
                 return item;
             }
         }
+	}
+
+	// additional info can only be applied to business client
+	private void setAdditionalInfo(Client item, Client withAdditionalInfo) {
+		if (!item.isBusiness()) {
+			return;
+		}
+		
+		Set<BankAccount> accounts = withAdditionalInfo.getAccounts();
+		Set<Location> locations = withAdditionalInfo.getLocations();
+		
+		if (!accounts.isEmpty()) {
+			item.getAccounts().addAll(accounts);
+		} else if (!locations.isEmpty()) {
+			item.getLocations().addAll(locations);
+		}
 	}
 
 }

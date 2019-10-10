@@ -1,8 +1,5 @@
 package com.example.batchforscience.mappers;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.validation.BindException;
@@ -33,10 +30,10 @@ public class ClientMapper implements FieldSetMapper<Client> {
 				mapToClient(client, fieldSet);
 				break;
 			case TOKEN_BANK_ACCOUNT:
-				client.setAccounts(readAccount(fieldSet));
+				client.getAccounts().add(readAccount(fieldSet));
 				break;
 			case TOKEN_LOCATION:
-				client.setLocations(readLocation(fieldSet));
+				client.getLocations().add(readLocation(fieldSet));
 				break;
 			case TOKEN_LAST_LINE:
 				return null;
@@ -59,19 +56,23 @@ public class ClientMapper implements FieldSetMapper<Client> {
 		boolean isBusiness = fieldSet.readString(0).equals(TOKEN_CLIENT_NONB) ? false : true;
 		client.setBusiness(isBusiness);
 	}
-
-	private Set<BankAccount> readAccount(FieldSet fieldSet) {
-		Set<BankAccount> accounts = new HashSet<BankAccount>();
+	
+	private BankAccount readAccount(FieldSet fieldSet) {
 		BankAccount account = new BankAccount();
 		account.setId(fieldSet.readLong(1));
 		account.setBankName(fieldSet.readString(2));
 		account.setAccountNumber(fieldSet.readString(3));
-		accounts.add(account);
-		return accounts;
-	}
 
-	private Set<Location> readLocation(FieldSet fieldSet) {
-		Set<Location> locations = new HashSet<Location>();
-		return locations;
+		return account;
+	}
+	
+	private Location readLocation(FieldSet fieldSet) {
+		Location location = new Location();
+		location.setId(fieldSet.readLong(1));
+		location.setCodeName(fieldSet.readString(2));
+		location.setAddress(fieldSet.readString(3));
+		location.setPost(fieldSet.readString(4));
+
+		return location;
 	}
 }
