@@ -1,5 +1,6 @@
 01;created at 2019-10-09
 10;101;Jill;Desc101;Addr101;1234;XUI9
+this is a bad line
 10;102;Joe;Desc102;Addr102;1234;XUI8
 20;103;Justin;Desc103;Addr103;1234;XUI7
 22;1031;homeAddress;notshowing;forgotten

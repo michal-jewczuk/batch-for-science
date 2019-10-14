@@ -1,5 +1,7 @@
 package com.example.batchforscience.mappers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.validation.BindException;
@@ -9,6 +11,8 @@ import com.example.batchforscience.domain.Client;
 import com.example.batchforscience.domain.Location;
 
 public class ClientMapper implements FieldSetMapper<Client> {
+	
+	private static final Logger log = LoggerFactory.getLogger(ClientMapper.class);
 	
 	//private static final String TOKEN_FIRST_LINE = "01";
 	private static final String TOKEN_LAST_LINE = "99";
@@ -39,7 +43,7 @@ public class ClientMapper implements FieldSetMapper<Client> {
 				return null;
 			default:
 				//should be something for error handling
-				System.out.println("===== Nobody expects Spanish Inquisition! =====");
+				log.error("==== Nobody expects Spanish Inquisition! Invalid data: {}", fieldSet.toString());
 		}
 
 		return client;

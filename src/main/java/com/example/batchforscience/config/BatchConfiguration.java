@@ -152,6 +152,7 @@ public class BatchConfiguration {
 	        tokenizers.put("21*", bankAccountTokenizer());
 	        tokenizers.put("22*", locationTokenizer());
 	        tokenizers.put("99*", endLineTokenizer());
+	        tokenizers.put("*", invalidDataTokenizer());
 
 	        tokenizer.setTokenizers(tokenizers);
 
@@ -186,6 +187,13 @@ public class BatchConfiguration {
 	public DelimitedLineTokenizer endLineTokenizer() {
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer(delimiter);
 		tokenizer.setNames(new String[] {"code", "info"});
+		
+		return tokenizer;
+	}
+	
+	@Bean
+	public DelimitedLineTokenizer invalidDataTokenizer() {
+		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer(delimiter);
 		
 		return tokenizer;
 	}
